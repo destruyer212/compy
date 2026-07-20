@@ -25,5 +25,31 @@ class PostgresMigrationCompatibilityTest {
             result.next();
             assertThat(result.getInt(1)).isEqualTo(26);
         }
+
+        try (var connection = DriverManager.getConnection(url, "sa", "");
+             var statement = connection.createStatement();
+             var result = statement.executeQuery("SELECT COUNT(*) FROM product_review")) {
+            result.next();
+            assertThat(result.getInt(1)).isEqualTo(100);
+        }
+
+        try (var connection = DriverManager.getConnection(url, "sa", "");
+             var statement = connection.createStatement();
+             var result = statement.executeQuery("SELECT COUNT(*) FROM phone_variant")) {
+            result.next();
+            assertThat(result.getInt(1)).isEqualTo(64);
+        }
+
+        try (var connection = DriverManager.getConnection(url, "sa", "");
+             var statement = connection.createStatement();
+             var result = statement.executeQuery("""
+                     SELECT MIN(variant_count) FROM (
+                         SELECT phone_id, COUNT(*) AS variant_count
+                         FROM phone_variant GROUP BY phone_id
+                     ) variants_per_phone
+                     """)) {
+            result.next();
+            assertThat(result.getInt(1)).isGreaterThanOrEqualTo(1);
+        }
     }
 }

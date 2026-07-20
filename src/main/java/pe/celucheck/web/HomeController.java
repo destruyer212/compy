@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pe.celucheck.dto.RegisterRequest;
 import pe.celucheck.repository.BrandRepository;
+import pe.celucheck.repository.ProductReviewRepository;
+import pe.celucheck.repository.PhoneVariantRepository;
 import pe.celucheck.service.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -18,6 +20,8 @@ import java.util.List;
 @Controller @RequiredArgsConstructor
 public class HomeController {
     private final CatalogService catalog; private final BrandRepository brands; private final UserService users; private final FavoriteService favorites;
+    private final ProductReviewRepository reviews;
+    private final PhoneVariantRepository variants;
 
     @GetMapping("/")
     String home(@RequestParam(defaultValue="") String q, @RequestParam(defaultValue="") String brand,
@@ -39,7 +43,24 @@ public class HomeController {
         model.addAttribute("selectedBrand",brand); model.addAttribute("maxPrice",maxPrice);
         model.addAttribute("selectedProfile",profile); return "catalog";
     }
-    @GetMapping("/productos/{slug}") String detail(@PathVariable String slug, Model model){ model.addAttribute("phone",catalog.detail(slug)); return "detail"; }
+    @GetMapping("/productos/{slug}")
+    String detail(@PathVariable String slug, @RequestParam(required = false) Long variant, Model model) {
+        var phone = catalog.detail(slug);
+        var productReviews = reviews.findByPhoneIdOrderByCreatedAtDescIdDesc(phone.getId());
+        var productVariants = variants.findByPhoneIdAndActiveTrueOrderByStorageGbAsc(phone.getId());
+        var selectedVariant = productVariants.stream().filter(v -> v.getId().equals(variant)).findFirst()
+                .orElseGet(() -> productVariants.stream().filter(v -> v.isDefaultVariant()).findFirst()
+                        .orElse(productVariants.get(0)));
+        double average = productReviews.stream().mapToInt(r -> r.getRating()).average().orElse(0);
+        model.addAttribute("phone", phone);
+        model.addAttribute("productName", phone.getName().replaceFirst("\\s+\\d+(?:GB|TB)$", ""));
+        model.addAttribute("variants", productVariants);
+        model.addAttribute("selectedVariant", selectedVariant);
+        model.addAttribute("reviews", productReviews);
+        model.addAttribute("reviewCount", productReviews.size());
+        model.addAttribute("reviewAverage", average);
+        return "detail";
+    }
     @GetMapping("/comparar")
     String compare(@RequestParam(defaultValue="") String ids, Model model) {
         List<Long> phoneIds = Arrays.stream(ids.split(",")).map(String::trim).filter(s -> s.matches("\\d+"))

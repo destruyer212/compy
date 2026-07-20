@@ -21,7 +21,8 @@ class CeluCheckWebTest {
     @Test void homeAndDetailArePublic() throws Exception {
         mvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("home"))
                 .andExpect(model().attributeExists("products", "newProducts"));
-        mvc.perform(get("/productos/iphone-15-pro-max-256gb")).andExpect(status().isOk()).andExpect(view().name("detail"));
+        mvc.perform(get("/productos/iphone-15-pro-max-256gb")).andExpect(status().isOk()).andExpect(view().name("detail"))
+                .andExpect(model().attributeExists("reviews", "reviewCount", "reviewAverage"));
     }
 
     @Test void profilesAndComparatorArePublic() throws Exception {
