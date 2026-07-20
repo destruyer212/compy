@@ -14,7 +14,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(a -> a
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/favoritos/**", "/api/favorites/**").authenticated()
-                .requestMatchers("/", "/catalogo", "/nosotros", "/comparar", "/login", "/registro", "/productos/**", "/click/**", "/api/products/**", "/api/chat", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                .requestMatchers("/", "/catalogo", "/nosotros", "/comparar", "/login", "/registro", "/productos/**", "/click/**", "/api/products/**", "/api/chat", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated())
             .formLogin(f -> f.loginPage("/login").usernameParameter("email").defaultSuccessUrl("/", true).failureUrl("/login?error").permitAll())
             .logout(l -> l.logoutSuccessUrl("/").permitAll())

@@ -27,6 +27,15 @@ server:
         same-site: lax
 app:
   name: CeluCheck
+springdoc:
+  packages-to-scan: pe.celucheck.web
+  paths-to-match: /api/**
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
 
 ---
 spring:

@@ -1,5 +1,9 @@
 # CeluCheck
 
+## Documentación técnica
+
+- [Informe técnico completo](docs/Documentacion_Tecnica_CeluCheck.docx)
+
 Comparador de precios de celulares desarrollado con Java 17, Spring Boot, MySQL, Flyway, Spring Security, Thymeleaf y Tailwind CSS.
 
 ## Funcionalidades
@@ -73,5 +77,13 @@ npm run build:css
 ```powershell
 mvn test
 ```
+
+## Swagger / OpenAPI
+
+- Interfaz Swagger UI: `http://localhost:8080/swagger-ui.html`
+- Especificación JSON: `http://localhost:8080/v3/api-docs`
+- Producción: `https://celucheck.onrender.com/swagger-ui.html`
+
+Swagger documenta las operaciones REST de catálogo, asistente y favoritos. La operación de favoritos requiere una sesión autenticada y protección CSRF.
 
 > Los precios y enlaces precargados son referenciales. Un despliegue real debe incorporar un proceso autorizado de sincronización con las tiendas.
