@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: celucheck
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DATABASE_URL
+        fromDatabase:
+          name: celucheck-db
+          property: connectionString
+      - key: DB_NAME
+        fromDatabase:
+          name: celucheck-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: celucheck-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: celucheck-db
+          property: password
+
+databases:
+  - name: celucheck-db
+    plan: free
+    region: oregon
+    databaseName: celucheck
+    user: celucheck
