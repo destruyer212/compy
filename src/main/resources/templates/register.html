@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Crear cuenta')}"></head>
+<body class="min-h-screen bg-cloud font-sans text-ink">
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="grid place-items-center px-5 py-12">
+  <div class="w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-8 shadow-soft sm:p-10">
+    <h1 class="text-3xl font-extrabold">Crea tu cuenta</h1>
+    <p class="mt-2 text-sm text-slate-500">Guarda equipos favoritos y conserva tus decisiones.</p>
+    <form th:action="@{/registro}" th:object="${registerRequest}" method="post" class="mt-7 grid gap-5">
+      <div th:if="${#fields.hasGlobalErrors()}" class="rounded-xl bg-red-50 p-3 text-sm text-red-700"><p th:each="e:${#fields.globalErrors()}" th:text="${e}"></p></div>
+      <label><span class="mb-2 block text-sm font-bold">Nombre completo</span><input class="field" th:field="*{fullName}" required><small class="text-red-600" th:errors="*{fullName}"></small></label>
+      <label><span class="mb-2 block text-sm font-bold">Correo</span><input class="field" type="email" th:field="*{email}" required><small class="text-red-600" th:errors="*{email}"></small></label>
+      <div class="grid gap-5 sm:grid-cols-2"><label><span class="mb-2 block text-sm font-bold">Contraseña</span><input class="field" type="password" th:field="*{password}" required><small class="text-red-600" th:errors="*{password}"></small></label><label><span class="mb-2 block text-sm font-bold">Confirmar</span><input class="field" type="password" th:field="*{confirmPassword}" required></label></div>
+      <button class="rounded-xl bg-brand py-3.5 font-extrabold text-white">Crear mi cuenta</button>
+    </form>
+    <p class="mt-6 text-center text-sm text-slate-500">¿Ya tienes cuenta? <a href="/login" class="font-bold text-brand">Inicia sesión</a></p>
+  </div>
+</main>
+</body></html>

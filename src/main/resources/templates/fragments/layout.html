@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compara celulares, precios y características para comprar mejor en tiendas peruanas.">
+  <meta name="theme-color" content="#0b1224"><meta property="og:type" content="website"><meta property="og:title" th:content="${title + ' | CeluCheck'}"><meta property="og:description" content="Compara celulares y encuentra el mejor precio.">
+  <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"><meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}">
+  <title th:text="${title + ' | CeluCheck'}">CeluCheck</title>
+  <link rel="icon" type="image/svg+xml" th:href="@{/images/logo.svg}">
+  <link rel="stylesheet" th:href="@{/css/tailwind.css(v=7)}">
+</head>
+<body>
+<header th:fragment="header" class="sticky top-0 z-40 border-b border-stone-200/80 bg-[#fbfaf7]/95 backdrop-blur-xl">
+  <div class="hidden bg-ink text-white lg:block"><div class="mx-auto flex h-8 max-w-7xl items-center justify-between px-8 text-[11px] font-semibold tracking-wide"><span>Comparamos para que elijas mejor, no para que gastes más.</span><span class="text-slate-300">Precios referenciales en Perú · Compra en tiendas oficiales</span></div></div>
+  <nav class="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Navegación principal">
+    <a th:href="@{/}" class="flex items-center gap-3" aria-label="CeluCheck, volver al inicio"><img src="/images/logo.svg" class="h-11 w-11" alt=""><span class="text-xl font-black tracking-[-.04em] text-ink">CELU<span class="text-brand">CHECK</span></span></a>
+    <div class="hidden items-center rounded-full border border-stone-200 bg-white p-1 text-sm font-bold text-slate-600 shadow-sm md:flex">
+      <a th:href="@{/}" class="rounded-full px-5 py-2.5 hover:bg-stone-100 hover:text-ink">Inicio</a><a th:href="@{/catalogo}" class="rounded-full px-5 py-2.5 hover:bg-stone-100 hover:text-ink">Catálogo</a><a th:href="@{/comparar}" class="js-compare-link rounded-full px-5 py-2.5 hover:bg-stone-100 hover:text-ink">Comparar <span id="nav-compare-count" class="ml-1 inline-grid min-w-5 place-items-center rounded-full bg-[#e9ff70] px-1.5 py-0.5 text-[10px] text-ink">0</span></a><a th:href="@{/#como-funciona}" class="hidden rounded-full px-5 py-2.5 hover:bg-stone-100 hover:text-ink xl:block">Cómo funciona</a>
+    </div>
+    <div class="flex items-center gap-2">
+      <a th:if="${currentUserName != null}" th:href="@{/favoritos}" class="hidden rounded-full px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-white sm:block">Guardados <span class="ml-1 rounded-full bg-stone-100 px-2 py-1 text-xs text-brand" th:text="${favoriteCount}">0</span></a>
+      <a th:if="${currentUserAdmin}" th:href="@{/admin}" class="hidden rounded-full px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-white lg:block">Admin</a>
+      <a th:if="${currentUserName == null}" th:href="@{/login}" class="hidden rounded-full bg-ink px-5 py-3 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#27345f] sm:block">Entrar</a>
+      <div th:if="${currentUserName != null}" class="hidden items-center gap-3 sm:flex"><span class="hidden text-sm font-bold text-slate-600 lg:block" th:text="${currentUserName}">Usuario</span><form th:action="@{/logout}" method="post"><button class="rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-bold hover:bg-stone-50">Salir</button></form></div>
+      <button id="mobile-menu-toggle" class="grid h-11 w-11 place-items-center rounded-full border border-stone-200 bg-white shadow-sm md:hidden" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h14M5 16h14"/></svg></button>
+    </div>
+  </nav>
+  <div id="mobile-menu" class="mobile-menu hidden border-t border-stone-200 bg-[#fbfaf7] px-4 pb-5 pt-3 md:hidden"><div class="mx-auto grid max-w-7xl gap-1"><a href="/" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Inicio</a><a href="/catalogo" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Catálogo</a><a href="/comparar" class="js-compare-link flex items-center justify-between rounded-2xl px-4 py-3 font-bold hover:bg-white"><span>Comparador</span><span id="mobile-compare-count" class="grid min-w-6 place-items-center rounded-full bg-[#e9ff70] px-2 py-1 text-xs">0</span></a><a href="/#como-funciona" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Cómo funciona</a><a href="/nosotros" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Sobre nosotros</a><a th:if="${currentUserName != null}" href="/favoritos" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Guardados <span th:text="${favoriteCount}" class="ml-1 rounded-full bg-stone-100 px-2 py-1 text-xs text-brand"></span></a><a th:if="${currentUserAdmin}" href="/admin" class="rounded-2xl px-4 py-3 font-bold hover:bg-white">Administración</a><a th:if="${currentUserName == null}" href="/login" class="mt-2 rounded-full bg-ink px-4 py-3 text-center font-extrabold text-white">Entrar a mi cuenta</a><form th:if="${currentUserName != null}" th:action="@{/logout}" method="post"><button class="mt-2 w-full rounded-full border bg-white px-4 py-3 text-left font-bold">Cerrar sesión</button></form></div></div>
+</header>
+<footer th:fragment="footer" class="mt-20 bg-ink text-white">
+  <div class="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-3"><div><div class="flex items-center gap-3"><img src="/images/logo.svg" class="h-10 w-10" alt=""><strong class="text-lg">CELUCHECK</strong></div><p class="mt-4 text-sm leading-6 text-slate-400">Decide mejor. Comparamos precios y características para que compres tu próximo celular con confianza.</p></div><div><h3 class="font-bold">Explora</h3><div class="mt-4 grid gap-2 text-sm text-slate-400"><a href="/">Comparar celulares</a><a href="/nosotros">Sobre nosotros</a><a href="/favoritos">Mis favoritos</a></div></div><div><h3 class="font-bold">Tiendas verificadas</h3><p class="mt-4 text-sm text-slate-400">Falabella · Ripley · Oechsle</p><p class="mt-2 text-xs text-slate-500">Los precios de esta demo son referenciales.</p></div></div>
+</footer>
+<div th:fragment="chat">
+  <div id="toast-region" class="pointer-events-none fixed left-1/2 top-24 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2" aria-live="polite"></div>
+  <button id="chat-toggle" class="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-2xl bg-brand text-2xl text-white shadow-xl transition hover:-translate-y-1 focus-visible:outline focus-visible:outline-4 focus-visible:outline-blue-200" aria-label="Abrir asistente" aria-expanded="false" aria-controls="chat-panel">✦</button>
+  <section id="chat-panel" class="fixed bottom-24 right-5 z-50 hidden w-[calc(100%-2.5rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+    <div class="flex items-center justify-between bg-brand px-5 py-4 text-white"><div><strong>Asistente CeluCheck</strong><p class="text-xs text-blue-100">Tu guía para elegir mejor</p></div><button id="chat-close" class="text-xl" aria-label="Cerrar">×</button></div>
+    <div id="chat-messages" class="chat-scroll h-80 space-y-3 overflow-y-auto bg-slate-50 p-4"><div class="max-w-[88%] rounded-2xl rounded-tl-sm bg-white p-3 text-sm shadow-sm">¡Hola! Dime tu presupuesto o qué te importa más: cámara, batería, juegos o uso diario.</div></div>
+    <form id="chat-form" class="flex gap-2 border-t p-3"><input id="chat-input" maxlength="1000" required class="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-brand" placeholder="Escribe tu duda..."><button class="rounded-xl bg-ink px-4 font-bold text-white">➜</button></form>
+  </section>
+  <script th:src="@{/js/app.js(v=6)}" defer></script>
+</div>
+</body></html>

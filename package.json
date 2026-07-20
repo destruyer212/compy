@@ -1,0 +1,12 @@
+{
+  "name": "celucheck-ui",
+  "private": true,
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./src/main/frontend/input.css -o ./src/main/resources/static/css/tailwind.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./src/main/frontend/input.css -o ./src/main/resources/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.0",
+    "tailwindcss": "4.3.0"
+  }
+}
